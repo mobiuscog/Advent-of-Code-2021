@@ -22,13 +22,6 @@ public class Day2
     System.out.printf("forward: %d down: %d result: %d%n", forward, down, forward * down);
 
     // Part 2
-    /*
-    down X increases your aim by X units.
-    up X decreases your aim by X units.
-    forward X does two things:
-    It increases your horizontal position by X units.
-    It increases your depth by your aim multiplied by X.
-     */
     forward = 0;
     down = 0;
     long aim = 0;
