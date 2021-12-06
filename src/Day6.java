@@ -1,7 +1,5 @@
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Optional;
 
 public class Day6
 {
@@ -9,57 +7,32 @@ public class Day6
     var lines = Util.readFile(Path.of("resources/day6.dat"));
 
     var fishAges = Arrays.stream(lines.get(0).trim().split(",")).mapToInt(Integer::parseInt).toArray();
-
-    var fishes = new ArrayList<Fish>();
+    var fish = new long[9];
     for (Integer age : fishAges) {
-      fishes.add(new Fish(age));
+      fish[age]++;
     }
 
     // Part 1
     for (int day = 0; day < 80; day++) {
-      var newFish = new ArrayList<Fish>();
-      for (Fish fish : fishes) {
-        fish.grow().ifPresent(newFish::add);
-      }
-      fishes.addAll(newFish);
-      System.out.println(newFish.size());
-      newFish.clear();
+      growFish(fish);
     }
 
-    System.out.printf("After 80 days there are %d fish%n", fishes.size());
+    var fishCount = Arrays.stream(fish).sum();
+    System.out.printf("After 80 days there are %d fish%n", fishCount);
 
-    // Part 2 -- the memory killer (if this works, you have more RAM than I do)
+    // Part 2
     for (int day = 80; day < 256; day++) {
-      var newFish = new ArrayList<Fish>();
-      for (Fish fish : fishes) {
-        fish.grow().ifPresent(newFish::add);
-      }
-      fishes.addAll(newFish);
-      newFish.clear();
+      growFish(fish);
     }
 
-    System.out.printf("After 256 days there are %d fish%n", fishes.size());
-
+    fishCount = Arrays.stream(fish).sum();
+    System.out.printf("After 256 days there are %d fish%n", fishCount);
   }
 
-  static class Fish
-  {
-    final int discoveryAge;
-
-    int age;
-
-    Fish(int age) {
-      this.discoveryAge = age;
-      this.age = age;
-    }
-
-    Optional<Fish> grow() {
-      age--;
-      if (age < 0) {
-        age = 6;
-        return Optional.of(new Fish(8));
-      }
-      return Optional.empty();
-    }
+  static void growFish(long[] fish) {
+    var currentFish = fish.clone();
+    System.arraycopy(currentFish, 1, fish, 0, currentFish.length - 1);
+    fish[6] += currentFish[0];
+    fish[8] = currentFish[0];
   }
 }
